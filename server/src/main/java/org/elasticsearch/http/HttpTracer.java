@@ -61,10 +61,10 @@ class HttpTracer {
      */
     @Nullable
     HttpTracer maybeLogRequest(RestRequest restRequest, @Nullable Exception e) {
-        if (logger.isTraceEnabled() && TransportService.shouldTraceAction(restRequest.uri(), tracerLogInclude, tracerLogExclude)) {
+        //  if (logger.isTraceEnabled() && TransportService.shouldTraceAction(restRequest.uri(), tracerLogInclude, tracerLogExclude)) {
             // trace.id in the response log is included from threadcontext, which isn't set at request log time
             // so include it here as part of the message
-            logger.trace(
+            logger.info(
                 () -> format(
                     "[%s][%s][%s][%s] received request from [%s]%s",
                     restRequest.getRequestId(),
@@ -76,17 +76,17 @@ class HttpTracer {
                 ),
                 e
             );
-            if (isBodyTracerEnabled()) {
+            //if (isBodyTracerEnabled()) {
                 try (var stream = HttpBodyTracer.getBodyOutputStream(restRequest.getRequestId(), HttpBodyTracer.Type.REQUEST)) {
                     restRequest.content().writeTo(stream);
                 } catch (Exception e2) {
                     assert false : e2; // no real IO here
                 }
-            }
+           // }
 
             return this;
-        }
-        return null;
+        //}
+        //return null;
     }
 
     boolean isBodyTracerEnabled() {
